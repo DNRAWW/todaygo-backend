@@ -1,4 +1,5 @@
-import { BaseEntity, Column, Entity, PrimaryColumn } from "typeorm";
+import { BaseEntity, Column, Entity, OneToOne, PrimaryColumn } from "typeorm";
+import { PersonEntity } from "./person.entity";
 
 export enum Roles {
     REGULAR_USER = "REGULAR_USER",
@@ -10,37 +11,6 @@ export enum Roles {
 export class UserEntity extends BaseEntity {
     @PrimaryColumn()
     id: number;
-    
-    @Column({
-        type: "varchar",
-        nullable: false,
-    })
-    firstName: string;
-    
-    @Column({
-        type: "varchar",
-        nullable: false,
-    })
-    lastName: string;
-
-    @Column({
-        type: "varchar",
-        nullable: false,
-    })
-    surName: string;
-
-    @Column({
-        type: "timestamp",
-        nullable: false,
-    })
-    dateOfBirth: Date;
-
-    @Column({
-        type: "varchar",
-        nullable: false,
-        enum: Roles,
-    })
-    role: Roles;
 
     @Column({
         type: "varchar",
@@ -56,8 +26,11 @@ export class UserEntity extends BaseEntity {
     password: string;
 
     @Column({
-        type: "varchar",
+        type: 'int',
         nullable: false,
     })
-    fullName: string;
+    personId: number;
+
+    @OneToOne(() => PersonEntity)
+    person: number;
 }

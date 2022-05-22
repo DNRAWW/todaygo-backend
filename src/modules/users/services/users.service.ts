@@ -6,17 +6,22 @@ import { UserEntity } from "../entities/user.entity";
 import bcrypt from "bcrypt";
 import { TokenService } from "./token.service";
 import { JwtTokenDto } from "../DTO/jwtToken.dto";
+import { PersonEntity } from "../entities/person.entity";
 
 @Injectable()
-export class UserService {
+export class UsersService {
     constructor(
         @InjectRepository(UserEntity)
-        private readonly repository: Repository<UserEntity>,
-        private readonly tokenService: TokenService
+        private readonly userRepository: Repository<UserEntity>,
+        
+        @InjectRepository(UserEntity)
+        private readonly personRepository: Repository<PersonEntity>,
+
+        private readonly tokenService: TokenService,
     ) {}
 
     async findOne(id: number): Promise<UserEntity> {
-        const result = await this.repository.findOne(id);
+        const result = await this.userRepository.findOne(id);
 
         if (!result) {
             throw new HttpException("Not found", HttpStatus.NOT_FOUND);
@@ -25,13 +30,10 @@ export class UserService {
         return result;
     }
 
-    async findAll(qSkip: number) {
-        const take = 10
-        const skip = qSkip;
-
-        const [result, total] = await this.repository.findAndCount(
+    async findAll(skip: number) {
+        const [result, total] = await this.userRepository.findAndCount(
             {
-                take: take,
+                take: 10,
                 skip: skip
             }
         );
@@ -42,34 +44,28 @@ export class UserService {
         }
     }
 
-    async findByName(name: string): Promise<UserEntity[]> {
-        const result = await this.repository.find({
-            where: {
-                fullName: Like(name),
-            },
-        });
-    
-        return result;
-    }
-
     async createUser(user: CreateUserDto): Promise<UserEntity> {
         const encryptedPassword = await bcrypt.hash(user.password, 3);
 
-        const result = await this.repository.save({
+        const person = await this.personRepository.save({
             dateOfBirth: user.dateOfBirth,
             firstName: user.firstName,
             lastName: user.lastName,
             surName: user.surName,
             fullName: user.lastName + " " + user.firstName + " " + user.surName,
+        });
+
+        const result = await this.userRepository.save({
             login: user.login,
             password: encryptedPassword,
+            personId: person.id,
         });
     
         return result;
     }
 
     async login(login: string, password: string): Promise<string> {
-        const candidate = await this.repository.findOne({
+        const candidate = await this.userRepository.findOne({
             where: {
                 login: login,
             },
@@ -80,7 +76,8 @@ export class UserService {
         }
 
         if(bcrypt.compareSync(password, candidate.password)){
-            return this.tokenService.genToken(candidate.id);
+            const person = await this.personRepository.findOne(candidate.person)
+            return this.tokenService.genToken(candidate.id, person.role);
         }
 
         throw new HttpException("Login or password is incorrect", HttpStatus.FORBIDDEN);

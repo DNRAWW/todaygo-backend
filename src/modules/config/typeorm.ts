@@ -12,7 +12,7 @@ export function getOrmConfig(): TypeOrmModuleOptions {
         username: config.get<string>("POSTGRES_USER"),
         password: config.get<string>("POSTGRES_PASSWORD"),
         database: config.get<string>("POSTGRES_DB"),
-        entities: ['./dist/entities/**/*.entity.js'],
+        entities: ['./dist/modules/**/entities/**/*.entity.js'],
         migrations: ['./dist/migrations/**/*.js'],
         migrationsTableName: 'migrations',
         namingStrategy: new SnakeNamingStrategy(),

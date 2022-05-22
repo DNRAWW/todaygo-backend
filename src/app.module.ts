@@ -6,7 +6,9 @@ import { UserModule } from './modules/users/users.module';
 
 @Module({
   imports: [
-    ConfigModule,
+    ConfigModule.forRoot({
+      envFilePath: ".env"
+    }), 
     TypeOrmModule.forRoot(getOrmConfig()),
     UserModule
   ],

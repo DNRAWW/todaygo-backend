@@ -2,6 +2,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import jwt from "jsonwebtoken";
 import { JwtTokenDto } from "../DTO/jwtToken.dto";
+import { Roles } from "../entities/user.entity";
 
 @Injectable()
 export class TokenService {
@@ -18,8 +19,8 @@ export class TokenService {
         }
     }
 
-    genToken(id: number): string {
-        return jwt.sign({userId: id}, this.configService.get("secret_key"), {
+    genToken(id: number, role: Roles): string {
+        return jwt.sign({userId: id, role: role}, this.configService.get("secret_key"), {
             algorithm: "RS256",
         });
     }

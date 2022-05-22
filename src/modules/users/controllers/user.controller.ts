@@ -1,17 +1,17 @@
 import { Body, Controller, Get, Param, Post, Res } from "@nestjs/common";
 import { CreateUserDto } from "../DTO/createUser.dto";
-import { GetAllDto } from "../DTO/getAll.dto";
+import { GetAllDto } from "../DTO/getAllUsers.dto";
 import { GetAllResponseDto } from "../DTO/getAllResponse.dto";
 import { GetByNameDto } from "../DTO/getByName.dto";
-import { GetOneDto } from "../DTO/getOne.dto";
+import { GetOneDto } from "../DTO/getOneUser.dto";
 import { LoginDto } from "../DTO/login.dto";
 import { UserEntity } from "../entities/user.entity";
-import { UserService } from "../services/user.service";
+import { UsersService } from "../services/users.service";
 
 @Controller("users")
-export class UserController {
+export class UsersController {
     constructor(
-        private service: UserService
+        private service: UsersService
     ){}
 
     @Get("getOne/:id")
@@ -24,17 +24,12 @@ export class UserController {
         return await this.service.findAll(params.skip);
     }
 
-    @Get("getAll/:skip")
-    async getByName(@Param() params: GetByNameDto): Promise<UserEntity[]> {
-        return await this.service.findByName(params.name);
-    }
-
-    @Post()
+    @Post("register")
     async createUser(@Body() body: CreateUserDto): Promise<UserEntity> {
         return await this.service.createUser(body);
     }
 
-    @Post()
+    @Post("login")
     async login(@Body() body: LoginDto, @Res({passthrough: true}) res): Promise<void> {
         const token = await this.service.login(body.login, body.password);
 
