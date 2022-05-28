@@ -1,30 +1,35 @@
-import { UserEntity } from "src/modules/users/entities/user.entity";
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryColumn } from "typeorm";
+import { PersonEntity } from 'src/modules/users/entities/person.entity';
+import { UserEntity } from 'src/modules/users/entities/user.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryColumn,
+} from 'typeorm';
 
-
-@Entity('Comments')
+@Entity('comments')
 export class CommentEntity {
-    @PrimaryColumn()
-    id: number;
+  @PrimaryColumn()
+  id: number;
 
-    @Column({
-        type: "varchar",
-        nullable: false,
-    })
-    text: string;
+  @Column({
+    type: 'varchar',
+    nullable: false,
+  })
+  text: string;
 
-    @Column({
-        type: "int",
-        nullable: false,
-    })
-    userId: number;
+  @Column()
+  personId: number;
 
-    @ManyToOne(() => UserEntity)
-    user: UserEntity;
+  @ManyToOne(() => PersonEntity, {
+    onDelete: 'CASCADE',
+  })
+  person: PersonEntity;
 
-    @CreateDateColumn({
-        type: 'timestamp without time zone', 
-        default: 'NOW()',
-    })
-    createdAt: Date;
+  @CreateDateColumn({
+    type: 'timestamp without time zone',
+    default: 'NOW()',
+  })
+  createdAt: Date;
 }

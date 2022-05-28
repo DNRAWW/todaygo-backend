@@ -1,6 +1,6 @@
-import { Length } from "class-validator";
+import { Length } from 'class-validator';
 
 export class GetByNameDto {
-    @Length(3, 20)
-    name: string;
+  @Length(3, 20)
+  name: string;
 }

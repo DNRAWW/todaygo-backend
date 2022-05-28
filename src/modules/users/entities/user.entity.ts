@@ -1,36 +1,36 @@
-import { BaseEntity, Column, Entity, OneToOne, PrimaryColumn } from "typeorm";
-import { PersonEntity } from "./person.entity";
+import { BaseEntity, Column, Entity, OneToOne, PrimaryColumn } from 'typeorm';
+import { PersonEntity } from './person.entity';
 
 export enum Roles {
-    REGULAR_USER = "REGULAR_USER",
-    ORGANIZER = "ORGANIZER",
-    ADMIN = "ADMIN"
+  REGULAR_USER = 'REGULAR_USER',
+  ORGANIZER = 'ORGANIZER',
+  ADMIN = 'ADMIN',
 }
 
-@Entity('Users')
+@Entity('users')
 export class UserEntity extends BaseEntity {
-    @PrimaryColumn()
-    id: number;
+  @PrimaryColumn()
+  id: number;
 
-    @Column({
-        type: "varchar",
-        nullable: false,
-        unique: true,
-    })
-    login: string;
+  @Column({
+    type: 'varchar',
+    nullable: false,
+    unique: true,
+  })
+  login: string;
 
-    @Column({
-        type: "varchar",
-        nullable: false,
-    })
-    password: string;
+  @Column({
+    type: 'varchar',
+    nullable: false,
+  })
+  password: string;
 
-    @Column({
-        type: 'int',
-        nullable: false,
-    })
-    personId: number;
+  @Column({
+    type: 'int',
+    nullable: false,
+  })
+  personId: number;
 
-    @OneToOne(() => PersonEntity)
-    person: number;
+  @OneToOne(() => PersonEntity)
+  person: number;
 }

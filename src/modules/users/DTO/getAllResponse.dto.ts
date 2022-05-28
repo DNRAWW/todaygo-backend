@@ -1,6 +1,6 @@
-import { UserEntity } from "../entities/user.entity";
+import { UserEntity } from '../entities/user.entity';
 
 export class GetAllResponseDto {
-    data: UserEntity[];
-    count: number;
+  data: UserEntity[];
+  count: number;
 }

@@ -1,38 +1,54 @@
-import { Body, Controller, Get, Param, Post, Res } from "@nestjs/common";
-import { CreateUserDto } from "../DTO/createUser.dto";
-import { GetAllDto } from "../DTO/getAllUsers.dto";
-import { GetAllResponseDto } from "../DTO/getAllResponse.dto";
-import { GetByNameDto } from "../DTO/getByName.dto";
-import { GetOneDto } from "../DTO/getOneUser.dto";
-import { LoginDto } from "../DTO/login.dto";
-import { UserEntity } from "../entities/user.entity";
-import { UsersService } from "../services/users.service";
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Param,
+  Post,
+  Res,
+} from '@nestjs/common';
+import { CreateUserDto } from '../DTO/createUser.dto';
+import { GetAllDto } from '../DTO/getAllUsers.dto';
+import { GetAllResponseDto } from '../DTO/getAllResponse.dto';
+import { GetByNameDto } from '../DTO/getByName.dto';
+import { GetOneDto } from '../DTO/getOneUser.dto';
+import { LoginDto } from '../DTO/login.dto';
+import { UserEntity } from '../entities/user.entity';
+import { UsersService } from '../services/users.service';
+import { UserDto } from '../DTO/user.dto';
 
-@Controller("users")
+@Controller('users')
 export class UsersController {
-    constructor(
-        private service: UsersService
-    ){}
+  @Inject()
+  private service: UsersService;
 
-    @Get("getOne/:id")
-    async getOne(@Param() params: GetOneDto): Promise<UserEntity> {
-        return await this.service.findOne(params.id);
-    }
+  @Get('get-one/:id')
+  async getOne(@Param() params: GetOneDto): Promise<UserEntity> {
+    return await this.service.findOne(params.id);
+  }
 
-    @Get("getAll/:skip")
-    async getAll(@Param() params: GetAllDto): Promise<GetAllResponseDto> {
-        return await this.service.findAll(params.skip);
-    }
+  @Get('get-all/:skip')
+  async getAll(@Param() params: GetAllDto): Promise<GetAllResponseDto> {
+    return await this.service.findAll(params.skip);
+  }
 
-    @Post("register")
-    async createUser(@Body() body: CreateUserDto): Promise<UserEntity> {
-        return await this.service.createUser(body);
-    }
+  @Post('register')
+  async createUser(@Body() body: CreateUserDto): Promise<UserEntity> {
+    return await this.service.create(body);
+  }
 
-    @Post("login")
-    async login(@Body() body: LoginDto, @Res({passthrough: true}) res): Promise<void> {
-        const token = await this.service.login(body.login, body.password);
+  @Post('login')
+  async login(
+    @Body() body: LoginDto,
+    @Res({ passthrough: true }) res,
+  ): Promise<void> {
+    const token = await this.service.login(body.login, body.password);
 
-        res.cookie('token', token);
-    }
+    res.cookie('token', token);
+  }
+
+  @Post('change')
+  async change(@Body() body: UserDto): Promise<void> {
+    await this.service.change(body);
+  }
 }

@@ -1,8 +1,12 @@
 import { Type } from 'class-transformer';
 import { Min } from 'class-validator';
 
-export class getOnePersonDto {
+export class GetAllCommentsDto {
   @Type(() => Number)
   @Min(0)
-  id: number;
+  eventId: number;
+
+  @Type(() => Number)
+  @Min(0)
+  skip: number;
 }
