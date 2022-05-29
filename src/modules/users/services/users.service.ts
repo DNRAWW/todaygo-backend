@@ -1,8 +1,8 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { CreateUserDto } from '../DTO/createUser.dto';
-import { UserEntity } from '../entities/user.entity';
+import { Roles, UserEntity } from '../entities/user.entity';
 import bcrypt from 'bcrypt';
 import { TokenService } from './token.service';
 import { JwtTokenDto } from '../DTO/jwtToken.dto';
@@ -11,15 +11,14 @@ import { UserDto } from '../DTO/user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
+  @InjectRepository(UserEntity)
+  private readonly userRepository: Repository<UserEntity>;
 
-    @InjectRepository(UserEntity)
-    private readonly personRepository: Repository<PersonEntity>,
+  @InjectRepository(PersonEntity)
+  private readonly personRepository: Repository<PersonEntity>;
 
-    private readonly tokenService: TokenService,
-  ) {}
+  @Inject()
+  private readonly tokenService: TokenService;
 
   async findOne(id: number): Promise<UserEntity> {
     const result = await this.userRepository.findOne(id);
@@ -43,7 +42,7 @@ export class UsersService {
     };
   }
 
-  async create(user: CreateUserDto): Promise<UserEntity> {
+  async create(user: CreateUserDto) {
     const encryptedPassword = await bcrypt.hash(user.password, 3);
 
     const person = await this.personRepository.save({
@@ -52,15 +51,15 @@ export class UsersService {
       lastName: user.lastName,
       surName: user.surName,
       fullName: user.lastName + ' ' + user.firstName + ' ' + user.surName,
+      visableName: user.visableName,
+      role: Roles.REGULAR_USER,
     });
 
-    const result = await this.userRepository.save({
+    await this.userRepository.save({
       login: user.login,
       password: encryptedPassword,
       personId: person.id,
     });
-
-    return result;
   }
 
   async login(login: string, password: string): Promise<string> {
@@ -89,6 +88,15 @@ export class UsersService {
   }
 
   async change(user: UserDto) {
+    if (user.password) {
+      const encryptedPassword = await bcrypt.hash(user.password, 3);
+      user.password = encryptedPassword;
+    }
+
     await this.userRepository.save(user);
+  }
+
+  async delete(id: number) {
+    await this.userRepository.delete(id);
   }
 }

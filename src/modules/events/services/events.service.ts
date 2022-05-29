@@ -1,9 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PersonEntity } from 'src/modules/users/entities/person.entity';
-import { Roles } from 'src/modules/users/entities/user.entity';
-import { PeopleService } from 'src/modules/users/services/people.service';
-import { MoreThanOrEqual, Repository } from 'typeorm';
+import { LessThanOrEqual, Repository } from 'typeorm';
 import { CreateEventDto } from '../DTO/createEvent.dto';
 import { EventDto } from '../DTO/event.dto';
 import { EventEntity } from '../entities/event.entity';
@@ -41,7 +38,7 @@ export class EventsService {
     // }
 
     await this.repository.delete({
-      date: MoreThanOrEqual(Date.now()),
+      date: LessThanOrEqual(new Date()),
     });
 
     await this.repository.save(event);

@@ -1,10 +1,16 @@
-import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { CommentEntity } from './comment.entity';
 import { EventEntity } from './event.entity';
 
 @Entity('event_comments')
-export class EventCommentEntity {
-  @PrimaryColumn()
+export class EventCommentEntity extends BaseEntity {
+  @PrimaryGeneratedColumn({ type: 'int' })
   id: number;
 
   @Column({

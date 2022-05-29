@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CommentDto } from '../DTO/comment.dto';
-import { CreateCommentDto } from '../DTO/createComment';
+import { CreateCommentDto } from '../DTO/createComment.dto';
 import { CommentEntity } from '../entities/comment.entity';
 import { EventCommentsService } from './eventComments.service';
 import { EventsService } from './events.service';

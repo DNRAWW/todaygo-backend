@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { Length, Min } from 'class-validator';
+import { IsOptional, Length, Min } from 'class-validator';
 
 export class PersonDto {
   @Type(() => Number)
@@ -7,14 +7,18 @@ export class PersonDto {
   id: number;
 
   @Length(3, 20)
+  @IsOptional()
   firstName: string;
 
   @Length(3, 20)
+  @IsOptional()
   lastName: string;
 
   @Length(3, 20)
+  @IsOptional()
   surName: string;
 
   @Length(5, 40)
+  @IsOptional()
   visableName: string;
 }

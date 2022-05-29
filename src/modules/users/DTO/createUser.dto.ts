@@ -16,9 +16,6 @@ export class CreateUserDto {
   @IsDate()
   dateOfBirth: Date;
 
-  @IsEnum(Roles)
-  role: Roles;
-
   @Length(5, 50)
   login: string;
 

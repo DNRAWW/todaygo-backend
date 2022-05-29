@@ -1,10 +1,16 @@
 import { PersonEntity } from 'src/modules/users/entities/person.entity';
-import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { EventEntity } from './event.entity';
 
 @Entity('event_participants')
-export class EventParticipantEntity {
-  @PrimaryColumn()
+export class EventParticipantEntity extends BaseEntity {
+  @PrimaryGeneratedColumn({ type: 'int' })
   id: number;
 
   @Column()

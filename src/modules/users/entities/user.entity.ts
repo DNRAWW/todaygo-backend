@@ -1,4 +1,10 @@
-import { BaseEntity, Column, Entity, OneToOne, PrimaryColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { PersonEntity } from './person.entity';
 
 export enum Roles {
@@ -9,7 +15,7 @@ export enum Roles {
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn({ type: 'int' })
   id: number;
 
   @Column({
@@ -32,5 +38,5 @@ export class UserEntity extends BaseEntity {
   personId: number;
 
   @OneToOne(() => PersonEntity)
-  person: number;
+  person!: PersonEntity;
 }

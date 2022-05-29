@@ -16,6 +16,7 @@ import { LoginDto } from '../DTO/login.dto';
 import { UserEntity } from '../entities/user.entity';
 import { UsersService } from '../services/users.service';
 import { UserDto } from '../DTO/user.dto';
+import { DeleteDto } from 'src/modules/common/dto/delete.dto';
 
 @Controller('users')
 export class UsersController {
@@ -33,8 +34,8 @@ export class UsersController {
   }
 
   @Post('register')
-  async createUser(@Body() body: CreateUserDto): Promise<UserEntity> {
-    return await this.service.create(body);
+  async createUser(@Body() body: CreateUserDto) {
+    await this.service.create(body);
   }
 
   @Post('login')
@@ -50,5 +51,10 @@ export class UsersController {
   @Post('change')
   async change(@Body() body: UserDto): Promise<void> {
     await this.service.change(body);
+  }
+
+  @Post('delete')
+  async delete(@Body() body: DeleteDto): Promise<void> {
+    await this.service.delete(body.id);
   }
 }

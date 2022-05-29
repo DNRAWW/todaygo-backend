@@ -5,7 +5,7 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
   Timestamp,
 } from 'typeorm';
 
@@ -17,7 +17,7 @@ export enum Tags {
 
 @Entity('events')
 export class EventEntity extends BaseEntity {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn({ type: 'int' })
   id: number;
 
   @Column({
@@ -53,7 +53,7 @@ export class EventEntity extends BaseEntity {
 
   @Column({
     type: 'varchar',
-    nullable: false,
+    nullable: true,
   })
   description: string;
 
@@ -76,7 +76,7 @@ export class EventEntity extends BaseEntity {
   address: string;
 
   @Column({
-    type: 'timestamp without time zone',
+    type: 'timestamp',
     nullable: false,
   })
   date: Date;

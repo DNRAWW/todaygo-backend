@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsEnum, Length, Min, MinDate } from 'class-validator';
+import { IsEnum, IsOptional, Length, Min, MinDate } from 'class-validator';
 import { Tags } from '../entities/event.entity';
 
 export class CreateEventDto {
@@ -17,7 +17,8 @@ export class CreateEventDto {
   @IsEnum(Tags, { each: true })
   tags: Tags[];
 
-  @Length(20, 500)
+  @Length(5, 500)
+  @IsOptional()
   description: string;
 
   @Type(() => Number)
@@ -27,9 +28,9 @@ export class CreateEventDto {
   @Length(20, 300)
   address: string;
 
-  @Type(() => Number)
-  @Min(Date.now())
-  date: number;
+  @Type(() => Date)
+  @MinDate(new Date())
+  date: Date;
 
   @Type(() => Number)
   @Min(1800)

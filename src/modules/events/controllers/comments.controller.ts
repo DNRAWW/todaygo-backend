@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
 import { DeleteDto } from 'src/modules/common/dto/delete.dto';
 import { CommentDto } from '../DTO/comment.dto';
-import { CreateCommentDto } from '../DTO/createComment';
+import { CreateCommentDto } from '../DTO/createComment.dto';
 import { GetAllCommentsDto } from '../DTO/getAllComments.dto';
 import { CommentsService } from '../services/comments.service';
 import { EventCommentsService } from '../services/eventComments.service';

@@ -27,11 +27,6 @@ export class EventsController {
     return await this.eventsService.findAll(params.skip);
   }
 
-  @Get('delete/:id')
-  async delete(@Param() params: DeleteDto) {
-    await this.eventsService.delete(params.id);
-  }
-
   @Get('check-participation/:eventId/:personId')
   async checkParticipation(@Param() params: ParticipationDto) {
     return await this.eventParticipantsService.checkParticipation(
@@ -48,6 +43,11 @@ export class EventsController {
   @Post('change')
   async change(@Body() body: EventDto) {
     await this.eventsService.change(body);
+  }
+
+  @Post('delete')
+  async delete(@Body() body: DeleteDto) {
+    await this.eventsService.delete(body.id);
   }
 
   @Post('participate')

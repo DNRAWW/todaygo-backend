@@ -1,16 +1,17 @@
 import { PersonEntity } from 'src/modules/users/entities/person.entity';
 import { UserEntity } from 'src/modules/users/entities/user.entity';
 import {
+  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity('comments')
-export class CommentEntity {
-  @PrimaryColumn()
+export class CommentEntity extends BaseEntity {
+  @PrimaryGeneratedColumn({ type: 'int' })
   id: number;
 
   @Column({
