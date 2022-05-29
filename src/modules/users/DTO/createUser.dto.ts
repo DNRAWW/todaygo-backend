@@ -23,5 +23,5 @@ export class CreateUserDto {
   password: string;
 
   @Length(5, 40)
-  visableName: string;
+  visibleName: string;
 }

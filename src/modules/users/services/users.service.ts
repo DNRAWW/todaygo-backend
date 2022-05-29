@@ -43,6 +43,20 @@ export class UsersService {
   }
 
   async create(user: CreateUserDto) {
+    const isLoginTaken = await this.isLoginTaken(user.login);
+    const isVisibleNameTaken = await this.isVisibleNameTaken(user.visibleName);
+
+    if (isLoginTaken) {
+      throw new HttpException('Login is already taken', HttpStatus.BAD_REQUEST);
+    }
+
+    if (isVisibleNameTaken) {
+      throw new HttpException(
+        'Visible name is already taken',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const encryptedPassword = await bcrypt.hash(user.password, 3);
 
     const person = await this.personRepository.save({
@@ -51,7 +65,7 @@ export class UsersService {
       lastName: user.lastName,
       surName: user.surName,
       fullName: user.lastName + ' ' + user.firstName + ' ' + user.surName,
-      visableName: user.visableName,
+      visableName: user.visibleName,
       role: Roles.REGULAR_USER,
     });
 
@@ -98,5 +112,33 @@ export class UsersService {
 
   async delete(id: number) {
     await this.userRepository.delete(id);
+  }
+
+  async isVisibleNameTaken(name: string) {
+    const isVisibleNameTaken = await this.personRepository.findOne({
+      where: {
+        visableName: name,
+      },
+    });
+
+    if (isVisibleNameTaken) {
+      return true;
+    }
+
+    return false;
+  }
+
+  async isLoginTaken(login: string) {
+    const isLoginTaken = await this.userRepository.findOne({
+      where: {
+        login: login,
+      },
+    });
+
+    if (isLoginTaken) {
+      return true;
+    }
+
+    return false;
   }
 }

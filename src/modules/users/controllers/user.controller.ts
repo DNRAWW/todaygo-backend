@@ -17,6 +17,8 @@ import { UserEntity } from '../entities/user.entity';
 import { UsersService } from '../services/users.service';
 import { UserDto } from '../DTO/user.dto';
 import { DeleteDto } from 'src/modules/common/dto/delete.dto';
+import { IsVisibleNameTakenDto } from '../DTO/isVisibleNameTaken.dto';
+import { IsLoginTakenDto } from '../DTO/isLoginTaken.dto';
 
 @Controller('users')
 export class UsersController {
@@ -31,6 +33,16 @@ export class UsersController {
   @Get('get-all/:skip')
   async getAll(@Param() params: GetAllDto): Promise<GetAllResponseDto> {
     return await this.service.findAll(params.skip);
+  }
+
+  @Get('is-visible-name-taken/:name')
+  async isVisibleNameTaken(@Param() params: IsVisibleNameTakenDto) {
+    return await this.service.isVisibleNameTaken(params.name);
+  }
+
+  @Get('is-login-taken/:name')
+  async isLoginTaken(@Param() params: IsLoginTakenDto) {
+    return await this.service.isLoginTaken(params.login);
   }
 
   @Post('register')
