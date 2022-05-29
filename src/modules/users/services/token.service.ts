@@ -23,9 +23,9 @@ export class TokenService {
     }
   }
 
-  genToken(id: number, role: Roles): string {
+  genToken(userid: number, personId: number, role: Roles): string {
     return jwt.sign(
-      { userId: id, role: role },
+      { userId: userid, personId: personId, role: role },
       this.configService.get('secret_key'),
       {
         algorithm: 'RS256',

@@ -7,8 +7,11 @@ import {
   Inject,
   Param,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/modules/common/decorators/user.decoratoor';
+import { UserFieldDto } from 'src/types/express/userField.dto';
 import { ChangeRoleDto } from '../DTO/chengeRole.dto';
 import { GetAllPeopleDto } from '../DTO/getAllPeople.dto';
 import { GetByNameDto } from '../DTO/getByName.dto';
@@ -16,6 +19,8 @@ import { getOnePersonDto } from '../DTO/getOnePerson.dto';
 import { PersonDto } from '../DTO/person.dto';
 import { PersonEntity } from '../entities/person.entity';
 import { Roles } from '../entities/user.entity';
+import { AuthGuard } from '../guards/auth.guard';
+import { RequireRole } from '../guards/role.guard';
 import { PeopleService } from '../services/people.service';
 
 @Controller('people')
@@ -44,12 +49,17 @@ export class PeopleController {
   }
 
   @Post('change-role')
+  @RequireRole(Roles.ADMIN)
   async changeRole(@Body() body: ChangeRoleDto): Promise<void> {
     await this.service.changeRole(body.id, body.role, body.orgName);
   }
 
   @Post('change')
-  async change(@Body() body: PersonDto): Promise<void> {
-    await this.service.change(body);
+  @UseGuards(AuthGuard)
+  async change(
+    @User() user: UserFieldDto,
+    @Body() body: PersonDto,
+  ): Promise<void> {
+    await this.service.change(body, user);
   }
 }

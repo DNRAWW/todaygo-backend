@@ -8,6 +8,7 @@ import { TokenService } from './token.service';
 import { JwtTokenDto } from '../DTO/jwtToken.dto';
 import { PersonEntity } from '../entities/person.entity';
 import { UserDto } from '../DTO/user.dto';
+import { UserFieldDto } from 'src/types/express/userField.dto';
 
 @Injectable()
 export class UsersService {
@@ -22,6 +23,18 @@ export class UsersService {
 
   async findOne(id: number): Promise<UserEntity> {
     const result = await this.userRepository.findOne(id);
+
+    if (!result) {
+      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+    }
+
+    return result;
+  }
+
+  async me(id: number): Promise<UserEntity> {
+    const result = await this.userRepository.findOne(id, {
+      relations: ['person'],
+    });
 
     if (!result) {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
@@ -91,8 +104,12 @@ export class UsersService {
     }
 
     if (bcrypt.compareSync(password, candidate.password)) {
-      const person = await this.personRepository.findOne(candidate.person);
-      return this.tokenService.genToken(candidate.id, person.role);
+      const person = await this.personRepository.findOne(candidate.personId);
+      return this.tokenService.genToken(
+        candidate.id,
+        candidate.personId,
+        person.role,
+      );
     }
 
     throw new HttpException(
@@ -101,7 +118,17 @@ export class UsersService {
     );
   }
 
-  async change(user: UserDto) {
+  async change(user: UserDto, currentUser: UserFieldDto) {
+    const userById = await this.userRepository.findOne(user.id);
+
+    if (!userById) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    if (userById.id !== currentUser.userId) {
+      throw new HttpException('Not authorized', HttpStatus.UNAUTHORIZED);
+    }
+
     if (user.password) {
       const encryptedPassword = await bcrypt.hash(user.password, 3);
       user.password = encryptedPassword;
@@ -110,7 +137,17 @@ export class UsersService {
     await this.userRepository.save(user);
   }
 
-  async delete(id: number) {
+  async delete(id: number, user: UserFieldDto) {
+    const userById = await this.userRepository.findOne(id);
+
+    if (!userById) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    if (userById.id !== user.userId) {
+      throw new HttpException('Not authorized', HttpStatus.UNAUTHORIZED);
+    }
+
     await this.userRepository.delete(id);
   }
 

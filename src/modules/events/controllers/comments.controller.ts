@@ -1,5 +1,16 @@
-import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
+import { User } from 'src/modules/common/decorators/user.decoratoor';
 import { DeleteDto } from 'src/modules/common/dto/delete.dto';
+import { AuthGuard } from 'src/modules/users/guards/auth.guard';
+import { UserFieldDto } from 'src/types/express/userField.dto';
 import { CommentDto } from '../DTO/comment.dto';
 import { CreateCommentDto } from '../DTO/createComment.dto';
 import { GetAllCommentsDto } from '../DTO/getAllComments.dto';
@@ -22,17 +33,20 @@ export class CommentsController {
   }
 
   @Post('create')
+  @UseGuards(AuthGuard)
   async create(@Body() body: CreateCommentDto) {
     await this.commentsService.create(body);
   }
 
   @Post('delete')
-  async delete(@Body() body: DeleteDto) {
-    await this.commentsService.delete(body.id);
+  @UseGuards(AuthGuard)
+  async delete(@User() user: UserFieldDto, @Body() body: DeleteDto) {
+    await this.commentsService.delete(body.id, user);
   }
 
   @Post('change')
-  async change(@Body() body: CommentDto) {
-    await this.commentsService.change(body);
+  @UseGuards(AuthGuard)
+  async change(@User() user: UserFieldDto, @Body() body: CommentDto) {
+    await this.commentsService.change(body, user);
   }
 }

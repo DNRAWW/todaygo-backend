@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from '../DTO/createUser.dto';
 import { GetAllDto } from '../DTO/getAllUsers.dto';
@@ -13,17 +14,26 @@ import { GetAllResponseDto } from '../DTO/getAllResponse.dto';
 import { GetByNameDto } from '../DTO/getByName.dto';
 import { GetOneDto } from '../DTO/getOneUser.dto';
 import { LoginDto } from '../DTO/login.dto';
-import { UserEntity } from '../entities/user.entity';
+import { Roles, UserEntity } from '../entities/user.entity';
 import { UsersService } from '../services/users.service';
 import { UserDto } from '../DTO/user.dto';
 import { DeleteDto } from 'src/modules/common/dto/delete.dto';
 import { IsVisibleNameTakenDto } from '../DTO/isVisibleNameTaken.dto';
 import { IsLoginTakenDto } from '../DTO/isLoginTaken.dto';
+import { RequireRole } from '../guards/role.guard';
+import { AuthGuard } from '../guards/auth.guard';
+import { User } from 'src/modules/common/decorators/user.decoratoor';
+import { UserFieldDto } from 'src/types/express/userField.dto';
 
 @Controller('users')
 export class UsersController {
   @Inject()
   private service: UsersService;
+
+  @Get('me')
+  async me(@User() user: UserFieldDto) {
+    return await this.service.me(user.userId);
+  }
 
   @Get('get-one/:id')
   async getOne(@Param() params: GetOneDto): Promise<UserEntity> {
@@ -31,6 +41,7 @@ export class UsersController {
   }
 
   @Get('get-all/:skip')
+  @RequireRole(Roles.ADMIN)
   async getAll(@Param() params: GetAllDto): Promise<GetAllResponseDto> {
     return await this.service.findAll(params.skip);
   }
@@ -61,12 +72,20 @@ export class UsersController {
   }
 
   @Post('change')
-  async change(@Body() body: UserDto): Promise<void> {
-    await this.service.change(body);
+  @UseGuards(AuthGuard)
+  async change(
+    @User() user: UserFieldDto,
+    @Body() body: UserDto,
+  ): Promise<void> {
+    await this.service.change(body, user);
   }
 
   @Post('delete')
-  async delete(@Body() body: DeleteDto): Promise<void> {
-    await this.service.delete(body.id);
+  @UseGuards(AuthGuard)
+  async delete(
+    @User() user: UserFieldDto,
+    @Body() body: DeleteDto,
+  ): Promise<void> {
+    await this.service.delete(body.id, user);
   }
 }

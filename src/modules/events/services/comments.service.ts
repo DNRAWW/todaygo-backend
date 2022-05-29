@@ -1,5 +1,7 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Roles } from 'src/modules/users/entities/user.entity';
+import { UserFieldDto } from 'src/types/express/userField.dto';
 import { Repository } from 'typeorm';
 import { CommentDto } from '../DTO/comment.dto';
 import { CreateCommentDto } from '../DTO/createComment.dto';
@@ -31,11 +33,31 @@ export class CommentsService {
     await this.eventCommentsService.linkComment(createdComment.id, dto.eventId);
   }
 
-  async change(comment: CommentDto) {
+  async change(comment: CommentDto, user: UserFieldDto) {
+    const commentById = await this.repository.findOne(comment.id);
+
+    if (!commentById) {
+      throw new HttpException('Comment not found', HttpStatus.NOT_FOUND);
+    }
+
+    if (commentById.personId !== user.personId) {
+      throw new HttpException('Not authorized', HttpStatus.UNAUTHORIZED);
+    }
+
     await this.repository.save(comment);
   }
 
-  async delete(id: number) {
+  async delete(id: number, user: UserFieldDto) {
+    const commentById = await this.repository.findOne(id);
+
+    if (!commentById) {
+      return;
+    }
+
+    if (commentById.personId !== user.personId && user.role !== Roles.ADMIN) {
+      throw new HttpException('Not authorized', HttpStatus.UNAUTHORIZED);
+    }
+
     await this.repository.delete(id);
   }
 }

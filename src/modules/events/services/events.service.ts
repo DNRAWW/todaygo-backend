@@ -1,5 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Roles } from 'src/modules/users/entities/user.entity';
+import { UserFieldDto } from 'src/types/express/userField.dto';
 import { LessThanOrEqual, Repository } from 'typeorm';
 import { CreateEventDto } from '../DTO/createEvent.dto';
 import { EventDto } from '../DTO/event.dto';
@@ -33,10 +35,6 @@ export class EventsService {
   }
 
   async create(event: CreateEventDto) {
-    // if(personRole === Roles.REGULAR_USER) {
-    //     throw new HttpException("Not allowed", HttpStatus.UNAUTHORIZED);
-    // }
-
     await this.repository.delete({
       date: LessThanOrEqual(new Date()),
     });
@@ -44,11 +42,31 @@ export class EventsService {
     await this.repository.save(event);
   }
 
-  async change(event: EventDto) {
+  async change(event: EventDto, user: UserFieldDto) {
+    const eventById = await this.repository.findOne(event.id);
+
+    if (!eventById) {
+      throw new HttpException('Event not found', HttpStatus.NOT_FOUND);
+    }
+
+    if (eventById.organizerId !== user.personId && user.role !== Roles.ADMIN) {
+      throw new HttpException('Not authorized', HttpStatus.UNAUTHORIZED);
+    }
+
     await this.repository.save(event);
   }
 
-  async delete(id: number) {
+  async delete(id: number, user: UserFieldDto) {
+    const eventById = await this.repository.findOne(id);
+
+    if (!eventById) {
+      return;
+    }
+
+    if (eventById.organizerId !== user.personId && user.role !== Roles.ADMIN) {
+      throw new HttpException('Not authorized', HttpStatus.UNAUTHORIZED);
+    }
+
     await this.repository.delete(id);
   }
 

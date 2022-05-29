@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { GetAllDto } from 'src/modules/common/dto/getAll.dto';
 import { GetOneDto } from 'src/modules/users/DTO/getOneUser.dto';
 import { CreateEventDto } from '../DTO/createEvent.dto';
@@ -8,6 +16,11 @@ import { EventEntity } from '../entities/event.entity';
 import { EventsService } from '../services/events.service';
 import { EventParticipantsService } from '../services/eventParticipants.service';
 import { ParticipationDto } from '../DTO/participation.dot';
+import { RequireRole } from 'src/modules/users/guards/role.guard';
+import { Roles } from 'src/modules/users/entities/user.entity';
+import { User } from 'src/modules/common/decorators/user.decoratoor';
+import { UserFieldDto } from 'src/types/express/userField.dto';
+import { AuthGuard } from 'src/modules/users/guards/auth.guard';
 
 @Controller('events')
 export class EventsController {
@@ -27,42 +40,60 @@ export class EventsController {
     return await this.eventsService.findAll(params.skip);
   }
 
-  @Get('check-participation/:eventId/:personId')
-  async checkParticipation(@Param() params: ParticipationDto) {
+  @Get('check-participation/:eventId')
+  @UseGuards(AuthGuard)
+  async checkParticipation(
+    @User() user: UserFieldDto,
+    @Param() params: ParticipationDto,
+  ) {
     return await this.eventParticipantsService.checkParticipation(
       params.eventId,
-      params.personId,
+      user.personId,
     );
   }
 
   @Post('create')
+  @UseGuards(AuthGuard)
+  @RequireRole(Roles.ORGANIZER)
   async create(@Body() body: CreateEventDto) {
     await this.eventsService.create(body);
   }
 
   @Post('change')
-  async change(@Body() body: EventDto) {
-    await this.eventsService.change(body);
+  @UseGuards(AuthGuard)
+  @RequireRole(Roles.ORGANIZER)
+  async change(@User() user: UserFieldDto, @Body() body: EventDto) {
+    await this.eventsService.change(body, user);
   }
 
   @Post('delete')
-  async delete(@Body() body: DeleteDto) {
-    await this.eventsService.delete(body.id);
+  @UseGuards(AuthGuard)
+  @RequireRole(Roles.ORGANIZER)
+  async delete(@User() user: UserFieldDto, @Body() body: DeleteDto) {
+    await this.eventsService.delete(body.id, user);
   }
 
   @Post('participate')
-  async participate(@Body() body: ParticipationDto) {
+  @UseGuards(AuthGuard)
+  async participate(
+    @User() user: UserFieldDto,
+    @Body() body: ParticipationDto,
+  ) {
     await this.eventParticipantsService.participate(
       body.eventId,
-      body.personId,
+      user.personId,
     );
   }
 
   @Post('not-participate')
-  async notParticipate(@Body() body: ParticipationDto) {
+  @UseGuards(AuthGuard)
+  async notParticipate(
+    @User() user: UserFieldDto,
+    @Body() body: ParticipationDto,
+  ) {
     await this.eventParticipantsService.notParticipate(
       body.eventId,
-      body.personId,
+      user.personId,
     );
   }
 }

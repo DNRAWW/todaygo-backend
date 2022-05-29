@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserFieldDto } from 'src/types/express/userField.dto';
 import { Like, Repository } from 'typeorm';
 import { PersonDto } from '../DTO/person.dto';
 import { PersonEntity } from '../entities/person.entity';
@@ -77,7 +78,17 @@ export class PeopleService {
     return result;
   }
 
-  async change(person: PersonDto) {
+  async change(person: PersonDto, user: UserFieldDto) {
+    const personById = await this.repository.findOne(person.id);
+
+    if (!personById) {
+      throw new HttpException('Person not found', HttpStatus.NOT_FOUND);
+    }
+
+    if (person.id !== user.personId && user.role !== Roles.ADMIN) {
+      throw new HttpException('Not authorized', HttpStatus.UNAUTHORIZED);
+    }
+
     await this.repository.save(person);
   }
 }
