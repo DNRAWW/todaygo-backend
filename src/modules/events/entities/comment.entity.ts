@@ -1,5 +1,4 @@
 import { PersonEntity } from 'src/modules/users/entities/person.entity';
-import { UserEntity } from 'src/modules/users/entities/user.entity';
 import {
   BaseEntity,
   Column,

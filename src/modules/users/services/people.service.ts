@@ -88,7 +88,31 @@ export class PeopleService {
     if (person.id !== user.personId && user.role !== Roles.ADMIN) {
       throw new HttpException('Not authorized', HttpStatus.UNAUTHORIZED);
     }
+    let fullName = '';
 
-    await this.repository.save(person);
+    if (person.firstName || person.lastName || person.surName) {
+      if (person.lastName !== personById.lastName) {
+        fullName += person.lastName + ' ';
+      } else {
+        fullName += personById.lastName + ' ';
+      }
+
+      if (person.firstName !== personById.firstName) {
+        fullName += person.firstName + ' ';
+      } else {
+        fullName += personById.firstName + ' ';
+      }
+
+      if (person.surName !== personById.surName) {
+        fullName += person.surName;
+      } else {
+        fullName += personById.surName;
+      }
+    }
+
+    await this.repository.save({
+      ...person,
+      fullName: fullName,
+    });
   }
 }
