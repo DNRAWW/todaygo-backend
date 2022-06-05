@@ -13,7 +13,7 @@ import { UsersService } from './services/users.service';
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity, PersonEntity]), ConfigModule],
   controllers: [UsersController, PeopleController],
-  providers: [UsersService, TokenService, PeopleService, RoleGuard],
+  providers: [UsersService, TokenService, PeopleService],
   exports: [UsersService, PeopleService, TokenService],
 })
 export class UserModule {}

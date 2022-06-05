@@ -10,16 +10,7 @@ export class AuthMiddleware implements NestMiddleware {
   @Inject()
   private readonly tokenService: TokenService;
 
-  async use(req: Request, res: Response, next: NextFunction) {
-    if (!req.cookies.token) {
-      req.user = {
-        userId: null,
-        personId: null,
-        role: null,
-      };
-      next();
-    }
-
+  async use(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const result = this.tokenService.verifyToken(req.cookies.token);
       const user = await this.usersService.findOne(result.userId);
@@ -45,8 +36,8 @@ export class AuthMiddleware implements NestMiddleware {
         personId: null,
         role: null,
       };
-    } finally {
-      next();
     }
+
+    next();
   }
 }

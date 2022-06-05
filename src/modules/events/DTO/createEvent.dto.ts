@@ -1,5 +1,12 @@
 import { Type } from 'class-transformer';
-import { IsEnum, IsOptional, Length, Min, MinDate } from 'class-validator';
+import {
+  IsArray,
+  IsEnum,
+  IsOptional,
+  Length,
+  Min,
+  MinDate,
+} from 'class-validator';
 import { Tags } from '../entities/event.entity';
 
 export class CreateEventDto {
@@ -7,13 +14,10 @@ export class CreateEventDto {
   name: string;
 
   @Type(() => Number)
-  @Min(1)
-  organizerId: number;
-
-  @Type(() => Number)
   @Min(10)
   maxNumberOfParticipants: number;
 
+  @IsArray()
   @IsEnum(Tags, { each: true })
   tags: Tags[];
 

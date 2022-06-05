@@ -24,6 +24,7 @@ import { RequireRole } from '../guards/role.guard';
 import { AuthGuard } from '../guards/auth.guard';
 import { User } from 'src/modules/common/decorators/user.decoratoor';
 import { UserFieldDto } from 'src/types/express/userField.dto';
+import { resolveSoa } from 'dns';
 
 @Controller('users')
 export class UsersController {
@@ -36,6 +37,7 @@ export class UsersController {
   }
 
   @Get('get-one/:id')
+  @RequireRole(Roles.ADMIN)
   async getOne(@Param() params: GetOneDto): Promise<UserEntity> {
     return await this.service.findOne(params.id);
   }

@@ -1,4 +1,4 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import cookieParser from 'cookie-parser';
 import { ValidationPipe } from '@nestjs/common';
@@ -14,7 +14,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  app.useGlobalGuards(app.get(RoleGuard));
+  app.useGlobalGuards(new RoleGuard(new Reflector()));
 
   await app.listen(3000);
 }

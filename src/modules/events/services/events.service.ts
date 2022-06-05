@@ -34,12 +34,22 @@ export class EventsService {
     };
   }
 
-  async create(event: CreateEventDto) {
+  async create(event: CreateEventDto, user: UserFieldDto) {
     await this.repository.delete({
       date: LessThanOrEqual(new Date()),
     });
 
-    await this.repository.save(event);
+    await this.repository.save({
+      address: event.address,
+      date: event.date,
+      description: event.description,
+      duration: event.duration,
+      maxNumberOfParticipants: event.maxNumberOfParticipants,
+      name: event.name,
+      organizerId: user.personId,
+      price: event.price,
+      tags: [...event.tags],
+    });
   }
 
   async change(event: EventDto, user: UserFieldDto) {

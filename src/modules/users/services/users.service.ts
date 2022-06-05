@@ -70,7 +70,7 @@ export class UsersService {
       );
     }
 
-    const encryptedPassword = await bcrypt.hash(user.password, 3);
+    const encryptedPassword = await bcrypt.hash(user.password, 4);
 
     const person = await this.personRepository.save({
       dateOfBirth: user.dateOfBirth,
@@ -130,7 +130,7 @@ export class UsersService {
     }
 
     if (user.password) {
-      const encryptedPassword = await bcrypt.hash(user.password, 3);
+      const encryptedPassword = await bcrypt.hash(user.password, 4);
       user.password = encryptedPassword;
     }
 

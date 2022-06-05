@@ -15,7 +15,9 @@ export class RoleGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const requiredRole = this.reflector.get<Roles>(
+    const req: Request = await context.switchToHttp().getRequest();
+
+    const requiredRole = this.reflector.get<Roles | null>(
       'requiredRole',
       context.getHandler(),
     );
@@ -23,8 +25,6 @@ export class RoleGuard implements CanActivate {
     if (!requiredRole) {
       return true;
     }
-
-    const req: Request = context.switchToHttp().getRequest();
 
     if (requiredRole !== req.user.role && req.user.role !== Roles.ADMIN) {
       return false;

@@ -55,8 +55,8 @@ export class EventsController {
   @Post('create')
   @UseGuards(AuthGuard)
   @RequireRole(Roles.ORGANIZER)
-  async create(@Body() body: CreateEventDto) {
-    await this.eventsService.create(body);
+  async create(@User() user: UserFieldDto, @Body() body: CreateEventDto) {
+    await this.eventsService.create(body, user);
   }
 
   @Post('change')
