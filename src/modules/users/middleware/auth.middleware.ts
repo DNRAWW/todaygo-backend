@@ -12,7 +12,7 @@ export class AuthMiddleware implements NestMiddleware {
 
   async use(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const result = this.tokenService.verifyToken(req.cookies.token);
+      const result = this.tokenService.verifyToken(req.headers.authorization);
       const user = await this.usersService.findOne(result.userId);
 
       if (!user) {

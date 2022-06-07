@@ -28,32 +28,38 @@ export class PeopleController {
   @Inject()
   private readonly service: PeopleService;
 
+  // Получить однин
   @Get('get-one/:id')
   async getOne(@Param() params: getOnePersonDto) {
     return await this.service.findOne(params.id);
   }
 
+  // Получить все
   @Get('get-all/:skip')
   async getAll(@Param() params: GetAllPeopleDto) {
     return await this.service.findAll(params.skip);
   }
 
+  // Получить по имени
   @Get('get-by-name/:name')
   async getByName(@Param() params: GetByNameDto): Promise<PersonEntity[]> {
     return await this.service.findByName(params.name);
   }
 
+  // Получить по имени организации
   @Get('get-by-org-name/:name')
   async getByOrgName(@Param() params: GetByNameDto): Promise<PersonEntity[]> {
     return await this.service.findByOrgName(params.name);
   }
 
+  // Получить поменять роль
   @Post('change-role')
   @RequireRole(Roles.ADMIN)
   async changeRole(@Body() body: ChangeRoleDto): Promise<void> {
     await this.service.changeRole(body.id, body.role, body.orgName);
   }
 
+  // Получить
   @Post('change')
   @UseGuards(AuthGuard)
   async change(

@@ -31,48 +31,57 @@ export class UsersController {
   @Inject()
   private service: UsersService;
 
+  // Получить данные о себе
   @Get('me')
+  @UseGuards(AuthGuard)
   async me(@User() user: UserFieldDto) {
     return await this.service.me(user.userId);
   }
 
+  // Получить один
   @Get('get-one/:id')
   @RequireRole(Roles.ADMIN)
   async getOne(@Param() params: GetOneDto): Promise<UserEntity> {
     return await this.service.findOne(params.id);
   }
 
+  // Получить всех
   @Get('get-all/:skip')
   @RequireRole(Roles.ADMIN)
   async getAll(@Param() params: GetAllDto): Promise<GetAllResponseDto> {
     return await this.service.findAll(params.skip);
   }
 
-  @Get('is-visible-name-taken/:name')
-  async isVisibleNameTaken(@Param() params: IsVisibleNameTakenDto) {
-    return await this.service.isVisibleNameTaken(params.name);
-  }
-
-  @Get('is-login-taken/:name')
-  async isLoginTaken(@Param() params: IsLoginTakenDto) {
-    return await this.service.isLoginTaken(params.login);
-  }
-
+  // Регистрация
   @Post('register')
   async createUser(@Body() body: CreateUserDto) {
     await this.service.create(body);
   }
 
+  // Логин уже занят?
+  @Post('is-login-taken')
+  async isLoginTaken(@Body() params: IsLoginTakenDto) {
+    return await this.service.isLoginTaken(params.login);
+  }
+
+  // Видимое имя уже занято?
+  @Post('is-visible-name-taken')
+  async isVisibleNameTaken(@Body() params: IsVisibleNameTakenDto) {
+    return await this.service.isVisibleNameTaken(params.name);
+  }
+
+  // Логин
   @Post('login')
   async login(
     @Body() body: LoginDto,
     @Res({ passthrough: true }) res,
-  ): Promise<void> {
+  ): Promise<string> {
     const token = await this.service.login(body.login, body.password);
 
-    res.cookie('token', token);
+    return token;
   }
 
+  // Видимое имя уже занято?
   @Post('change')
   @UseGuards(AuthGuard)
   async change(
@@ -82,6 +91,7 @@ export class UsersController {
     await this.service.change(body, user);
   }
 
+  // Удалить
   @Post('delete')
   @UseGuards(AuthGuard)
   async delete(

@@ -24,6 +24,7 @@ export class CommentsController {
   @Inject()
   private readonly eventCommentsService: EventCommentsService;
 
+  // Получить всё
   @Get('get-all/:eventId/:skip')
   async getAll(@Param() params: GetAllCommentsDto) {
     return await this.eventCommentsService.findByEvent(
@@ -32,18 +33,21 @@ export class CommentsController {
     );
   }
 
+  // Создать
   @Post('create')
   @UseGuards(AuthGuard)
   async create(@Body() body: CreateCommentDto) {
     await this.commentsService.create(body);
   }
 
+  // Удалить
   @Post('delete')
   @UseGuards(AuthGuard)
   async delete(@User() user: UserFieldDto, @Body() body: DeleteDto) {
     await this.commentsService.delete(body.id, user);
   }
 
+  // Поменять
   @Post('change')
   @UseGuards(AuthGuard)
   async change(@User() user: UserFieldDto, @Body() body: CommentDto) {

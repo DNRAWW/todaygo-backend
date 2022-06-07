@@ -30,16 +30,19 @@ export class EventsController {
   @Inject()
   private readonly eventParticipantsService: EventParticipantsService;
 
+  // Получить один
   @Get('get-one/:id')
   async getOne(@Param() params: GetOneDto): Promise<EventEntity> {
     return await this.eventsService.findOne(params.id);
   }
 
+  // Получить всё
   @Get('get-all/:skip')
   async getAll(@Param() params: GetAllDto) {
     return await this.eventsService.findAll(params.skip);
   }
 
+  // Проверить участие
   @Get('check-participation/:eventId')
   @UseGuards(AuthGuard)
   async checkParticipation(
@@ -52,6 +55,7 @@ export class EventsController {
     );
   }
 
+  // Создать
   @Post('create')
   @UseGuards(AuthGuard)
   @RequireRole(Roles.ORGANIZER)
@@ -59,6 +63,7 @@ export class EventsController {
     await this.eventsService.create(body, user);
   }
 
+  // Поменять
   @Post('change')
   @UseGuards(AuthGuard)
   @RequireRole(Roles.ORGANIZER)
@@ -66,6 +71,7 @@ export class EventsController {
     await this.eventsService.change(body, user);
   }
 
+  // Удалить
   @Post('delete')
   @UseGuards(AuthGuard)
   @RequireRole(Roles.ORGANIZER)
@@ -73,6 +79,7 @@ export class EventsController {
     await this.eventsService.delete(body.id, user);
   }
 
+  // Участвовать
   @Post('participate')
   @UseGuards(AuthGuard)
   async participate(
@@ -85,6 +92,7 @@ export class EventsController {
     );
   }
 
+  // Не участвовать
   @Post('not-participate')
   @UseGuards(AuthGuard)
   async notParticipate(
