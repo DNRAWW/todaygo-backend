@@ -2,6 +2,7 @@ import {
   BaseEntity,
   Column,
   Entity,
+  JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -38,5 +39,6 @@ export class UserEntity extends BaseEntity {
   personId: number;
 
   @OneToOne(() => PersonEntity)
+  @JoinColumn()
   person!: PersonEntity;
 }
