@@ -2,6 +2,7 @@ import {
   BaseEntity,
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -33,5 +34,6 @@ export class EventCommentEntity extends BaseEntity {
   @ManyToOne(() => CommentEntity, {
     onDelete: 'CASCADE',
   })
+  @JoinColumn()
   comment: CommentEntity;
 }

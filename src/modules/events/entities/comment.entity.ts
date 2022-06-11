@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -25,6 +26,7 @@ export class CommentEntity extends BaseEntity {
   @ManyToOne(() => PersonEntity, {
     onDelete: 'CASCADE',
   })
+  @JoinColumn()
   person: PersonEntity;
 
   @CreateDateColumn({

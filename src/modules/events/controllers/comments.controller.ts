@@ -36,8 +36,9 @@ export class CommentsController {
   // Создать
   @Post('create')
   @UseGuards(AuthGuard)
-  async create(@Body() body: CreateCommentDto) {
-    await this.commentsService.create(body);
+  async create(@User() user: UserFieldDto, @Body() body: CreateCommentDto) {
+    const comment = await this.commentsService.create(body, user);
+    return comment.id;
   }
 
   // Удалить

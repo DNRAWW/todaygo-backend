@@ -18,7 +18,7 @@ export class CommentsService {
   @Inject()
   private readonly eventCommentsService: EventCommentsService;
 
-  async create(dto: CreateCommentDto) {
+  async create(dto: CreateCommentDto, user: UserFieldDto) {
     const event = await this.eventService.findOne(dto.eventId);
 
     if (!event) {
@@ -26,11 +26,12 @@ export class CommentsService {
     }
 
     const createdComment = await this.repository.save({
-      personId: dto.personId,
+      personId: user.personId,
       text: dto.text,
     });
 
     await this.eventCommentsService.linkComment(createdComment.id, dto.eventId);
+    return createdComment;
   }
 
   async change(comment: CommentDto, user: UserFieldDto) {

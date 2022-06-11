@@ -16,6 +16,9 @@ export class EventCommentsService {
       skip: skip,
       take: 15,
       relations: ['comment', 'comment.person'],
+      order: {
+        commentId: 'DESC',
+      },
     });
 
     return {
