@@ -178,4 +178,14 @@ export class UsersService {
 
     return false;
   }
+
+  async checkPassword(password: string, user: UserFieldDto) {
+    const userById = await this.userRepository.findOne(user.userId);
+
+    if (bcrypt.compareSync(password, userById.password)) {
+      return true;
+    }
+
+    return false;
+  }
 }

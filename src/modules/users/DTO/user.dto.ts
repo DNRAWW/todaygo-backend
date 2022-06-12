@@ -6,10 +6,6 @@ export class UserDto {
   @Min(1)
   id: number;
 
-  @Length(5, 50)
-  @IsOptional()
-  login: string;
-
   @Length(8, 25)
   @IsOptional()
   password: string;

@@ -25,6 +25,7 @@ import { AuthGuard } from '../guards/auth.guard';
 import { User } from 'src/modules/common/decorators/user.decoratoor';
 import { UserFieldDto } from 'src/types/express/userField.dto';
 import { resolveSoa } from 'dns';
+import { checkPasswordDto } from '../DTO/checkPassword.dto';
 
 @Controller('users')
 export class UsersController {
@@ -81,7 +82,7 @@ export class UsersController {
     return token;
   }
 
-  // Видимое имя уже занято?
+  // Изменить
   @Post('change')
   @UseGuards(AuthGuard)
   async change(
@@ -99,5 +100,15 @@ export class UsersController {
     @Body() body: DeleteDto,
   ): Promise<void> {
     await this.service.delete(body.id, user);
+  }
+
+  // Проверить пароль
+  @Post('check-password')
+  @UseGuards(AuthGuard)
+  async checkPassword(
+    @User() user: UserFieldDto,
+    @Body() body: checkPasswordDto,
+  ): Promise<boolean> {
+    return await this.service.checkPassword(body.password, user);
   }
 }
