@@ -34,6 +34,21 @@ export class EventsService {
     };
   }
 
+  async findAllByOrg(id: number, skip: number) {
+    const [result, total] = await this.repository.findAndCount({
+      take: 10,
+      skip: skip,
+      where: {
+        organizerId: id,
+      },
+    });
+
+    return {
+      data: result,
+      count: total,
+    };
+  }
+
   async create(event: CreateEventDto, user: UserFieldDto) {
     await this.repository.delete({
       date: LessThanOrEqual(new Date()),

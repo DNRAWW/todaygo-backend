@@ -21,6 +21,7 @@ import { Roles } from 'src/modules/users/entities/user.entity';
 import { User } from 'src/modules/common/decorators/user.decoratoor';
 import { UserFieldDto } from 'src/types/express/userField.dto';
 import { AuthGuard } from 'src/modules/users/guards/auth.guard';
+import { GetAllEventsByOrgDto } from '../DTO/getAllEventsByOrg.dto';
 
 @Controller('events')
 export class EventsController {
@@ -40,6 +41,12 @@ export class EventsController {
   @Get('get-all/:skip')
   async getAll(@Param() params: GetAllDto) {
     return await this.eventsService.findAll(params.skip);
+  }
+
+  // Получить всё по организатору
+  @Get('get-all-by-org/:id/:skip')
+  async getAllByOrg(@Param() params: GetAllEventsByOrgDto) {
+    return await this.eventsService.findAllByOrg(params.id, params.skip);
   }
 
   // Проверить участие
