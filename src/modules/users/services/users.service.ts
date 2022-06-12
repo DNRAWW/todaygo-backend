@@ -179,13 +179,29 @@ export class UsersService {
     return false;
   }
 
-  async checkPassword(password: string, user: UserFieldDto) {
+  async changePassword(
+    password: string,
+    newPassword: string,
+    user: UserFieldDto,
+  ) {
     const userById = await this.userRepository.findOne(user.userId);
 
+    console.log(password);
+
     if (bcrypt.compareSync(password, userById.password)) {
-      return true;
+      const encryptedPassword = await bcrypt.hash(newPassword, 4);
+
+      this.userRepository.save({
+        id: user.userId,
+        password: encryptedPassword,
+      });
+
+      return;
     }
 
-    return false;
+    throw new HttpException(
+      'Current password is not correct',
+      HttpStatus.UNAUTHORIZED,
+    );
   }
 }
