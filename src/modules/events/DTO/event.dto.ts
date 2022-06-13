@@ -34,8 +34,8 @@ export class EventDto {
   @IsOptional()
   address: string;
 
-  @Type(() => Number)
-  @Min(Date.now())
+  @Type(() => Date)
+  @MinDate(new Date())
   @IsOptional()
   date: number;
 
