@@ -43,4 +43,8 @@ export class EventDto {
   @Min(1800)
   @IsOptional()
   duration: number;
+
+  @Type(() => Number)
+  @Min(1)
+  cityId: number;
 }

@@ -1,8 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { endOfDay, startOfDay } from 'date-fns';
 import { Roles } from 'src/modules/users/entities/user.entity';
 import { UserFieldDto } from 'src/types/express/userField.dto';
-import { LessThanOrEqual, Repository } from 'typeorm';
+import { Between, ILike, LessThanOrEqual, Repository } from 'typeorm';
 import { CreateEventDto } from '../DTO/createEvent.dto';
 import { EventDto } from '../DTO/event.dto';
 import { EventEntity } from '../entities/event.entity';
@@ -13,7 +14,9 @@ export class EventsService {
   private readonly repository: Repository<EventEntity>;
 
   async findOne(id: number): Promise<EventEntity> {
-    const result = await this.repository.findOne(id);
+    const result = await this.repository.findOne(id, {
+      relations: ['city'],
+    });
 
     if (!result) {
       throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
@@ -22,10 +25,16 @@ export class EventsService {
     return result;
   }
 
-  async findAll(skip: number) {
+  async findAll(skip: number, cityId: number) {
     const [result, total] = await this.repository.findAndCount({
       take: 10,
       skip: skip,
+      order: {
+        date: 'ASC',
+      },
+      where: {
+        cityId: cityId,
+      },
     });
 
     return {
@@ -64,6 +73,7 @@ export class EventsService {
       organizerId: user.personId,
       price: event.price,
       tags: [...event.tags],
+      cityId: event.cityId,
     });
   }
 
@@ -101,5 +111,37 @@ export class EventsService {
 
   async decrementParticipants(id: number) {
     await this.repository.decrement({ id }, 'numberOfParticipants', 1);
+  }
+
+  async findAllByDate(date: string, skip: number, cityId: number) {
+    const [result, total] = await this.repository.findAndCount({
+      take: 10,
+      skip: skip,
+      where: {
+        date: Between(startOfDay(new Date(date)), endOfDay(new Date(date))),
+        cityId: cityId,
+      },
+    });
+
+    return {
+      data: result,
+      count: total,
+    };
+  }
+
+  async findAllByName(name: string, skip: number, cityId: number) {
+    const [result, total] = await this.repository.findAndCount({
+      take: 10,
+      skip: skip,
+      where: {
+        name: ILike(`%${name}%`),
+        cityId: cityId,
+      },
+    });
+
+    return {
+      data: result,
+      count: total,
+    };
   }
 }

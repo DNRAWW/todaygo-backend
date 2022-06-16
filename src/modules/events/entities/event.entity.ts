@@ -4,10 +4,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   Timestamp,
 } from 'typeorm';
+import { CityEntity } from './city.entity';
 
 export enum Tags {
   CULTURAL = 'CULTURAL',
@@ -93,4 +95,14 @@ export class EventEntity extends BaseEntity {
     nullable: false,
   })
   duration: number;
+
+  @Column({
+    type: 'int',
+    nullable: false,
+  })
+  cityId: number;
+
+  @ManyToOne(() => CityEntity, { onDelete: 'CASCADE' })
+  @JoinColumn()
+  city: CityEntity;
 }

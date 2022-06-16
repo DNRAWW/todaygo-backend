@@ -5,6 +5,7 @@ import {
   Inject,
   Param,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { GetAllDto } from 'src/modules/common/dto/getAll.dto';
@@ -22,6 +23,10 @@ import { User } from 'src/modules/common/decorators/user.decoratoor';
 import { UserFieldDto } from 'src/types/express/userField.dto';
 import { AuthGuard } from 'src/modules/users/guards/auth.guard';
 import { GetAllEventsByOrgDto } from '../DTO/getAllEventsByOrg.dto';
+import { GetByDateDto } from '../DTO/getByDate.dto';
+import { GetByNameDto } from 'src/modules/users/DTO/getByName.dto';
+import { GetEventByNameDto } from '../DTO/getByName.dto';
+import { GetAllEventsDto } from '../DTO/getAllEvnets.dto';
 
 @Controller('events')
 export class EventsController {
@@ -38,15 +43,26 @@ export class EventsController {
   }
 
   // Получить всё
-  @Get('get-all/:skip')
-  async getAll(@Param() params: GetAllDto) {
-    return await this.eventsService.findAll(params.skip);
+  @Get('get-all/:cityId/:skip')
+  async getAll(@Param() params: GetAllEventsDto) {
+    return await this.eventsService.findAll(params.skip, params.cityId);
   }
 
   // Получить всё по организатору
   @Get('get-all-by-org/:id/:skip')
   async getAllByOrg(@Param() params: GetAllEventsByOrgDto) {
     return await this.eventsService.findAllByOrg(params.id, params.skip);
+  }
+
+  // Получение по дате
+  @Get('get-by-date')
+  @UseGuards(AuthGuard)
+  async getByDate(@Query() params: GetByDateDto) {
+    return await this.eventsService.findAllByDate(
+      params.date,
+      params.skip,
+      params.cityId,
+    );
   }
 
   // Проверить участие
@@ -59,6 +75,17 @@ export class EventsController {
     return await this.eventParticipantsService.checkParticipation(
       params.eventId,
       user.personId,
+    );
+  }
+
+  // Получить по имени
+  @Get('get-by-name')
+  @UseGuards(AuthGuard)
+  async getByName(@Query() params: GetEventByNameDto) {
+    return await this.eventsService.findAllByName(
+      params.query,
+      params.skip,
+      params.cityId,
     );
   }
 

@@ -33,10 +33,14 @@ export class CreateEventDto {
   address: string;
 
   @Type(() => Date)
-  @MinDate(new Date())
+  @MinDate(new Date(new Date().toISOString().split('T')[0]))
   date: Date;
 
   @Type(() => Number)
   @Min(1800)
   duration: number;
+
+  @Type(() => Number)
+  @Min(1)
+  cityId: number;
 }
