@@ -29,7 +29,7 @@ export class CreateEventDto {
   @Min(0)
   price: number;
 
-  @Length(20, 300)
+  @Length(10, 300)
   address: string;
 
   @Type(() => Date)
