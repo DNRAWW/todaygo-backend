@@ -1,3 +1,4 @@
+import { AttachmentEntity } from 'src/modules/attachment/entities/attachment.entity';
 import { UserEntity } from 'src/modules/users/entities/user.entity';
 import {
   BaseEntity,
@@ -6,8 +7,8 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
-  Timestamp,
 } from 'typeorm';
 import { CityEntity } from './city.entity';
 
@@ -105,4 +106,14 @@ export class EventEntity extends BaseEntity {
   @ManyToOne(() => CityEntity, { onDelete: 'CASCADE' })
   @JoinColumn()
   city: CityEntity;
+
+  @Column({
+    type: 'int',
+    nullable: false,
+  })
+  attachmentId: number;
+
+  @OneToOne(() => AttachmentEntity, { onDelete: 'CASCADE' })
+  @JoinColumn()
+  attachment: CityEntity;
 }

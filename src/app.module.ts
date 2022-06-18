@@ -6,7 +6,10 @@ import {
 } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { join } from 'path';
+import { AttachmentsModule } from './modules/attachment/attachment.module';
 import { getOrmConfig } from './modules/config/typeorm';
 import { EventModule } from './modules/events/events.module';
 import { RoleGuard } from './modules/users/guards/role.guard';
@@ -18,9 +21,14 @@ import { UserModule } from './modules/users/users.module';
     ConfigModule.forRoot({
       envFilePath: '.env',
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '../static'),
+      serveRoot: '/static',
+    }),
     TypeOrmModule.forRoot(getOrmConfig()),
     UserModule,
     EventModule,
+    AttachmentsModule,
   ],
   controllers: [],
   providers: [RoleGuard],

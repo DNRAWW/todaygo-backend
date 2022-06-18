@@ -46,5 +46,11 @@ export class EventDto {
 
   @Type(() => Number)
   @Min(1)
+  @IsOptional()
   cityId: number;
+
+  @Type(() => Number)
+  @Min(1)
+  @IsOptional()
+  attachmentId: number;
 }

@@ -15,7 +15,7 @@ export class EventsService {
 
   async findOne(id: number): Promise<EventEntity> {
     const result = await this.repository.findOne(id, {
-      relations: ['city'],
+      relations: ['city', 'attachment'],
     });
 
     if (!result) {
@@ -35,6 +35,7 @@ export class EventsService {
       where: {
         cityId: cityId,
       },
+      relations: ['attachment'],
     });
 
     return {
@@ -50,6 +51,7 @@ export class EventsService {
       where: {
         organizerId: id,
       },
+      relations: ['city', 'attachment'],
     });
 
     return {
@@ -74,6 +76,7 @@ export class EventsService {
       price: event.price,
       tags: [...event.tags],
       cityId: event.cityId,
+      attachmentId: event.attachmentId,
     });
   }
 
@@ -121,6 +124,7 @@ export class EventsService {
         date: Between(startOfDay(new Date(date)), endOfDay(new Date(date))),
         cityId: cityId,
       },
+      relations: ['attachment'],
     });
 
     return {
@@ -137,6 +141,7 @@ export class EventsService {
         name: ILike(`%${name}%`),
         cityId: cityId,
       },
+      relations: ['attachment'],
     });
 
     return {
