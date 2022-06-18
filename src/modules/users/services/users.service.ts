@@ -31,6 +31,17 @@ export class UsersService {
     return result;
   }
 
+  async findByLogin(login: string): Promise<UserEntity[]> {
+    const result = await this.userRepository.find({
+      where: {
+        login: login,
+      },
+      relations: ['person'],
+    });
+
+    return result;
+  }
+
   async me(id: number): Promise<UserEntity> {
     const result = await this.userRepository.findOne(id, {
       relations: ['person'],

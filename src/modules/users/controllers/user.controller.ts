@@ -26,6 +26,7 @@ import { User } from 'src/modules/common/decorators/user.decoratoor';
 import { UserFieldDto } from 'src/types/express/userField.dto';
 import { resolveSoa } from 'dns';
 import { ChangePasswordDto } from '../DTO/changePassword.dto';
+import { GetByLoginDto } from '../DTO/getByLogin.dto';
 
 @Controller('users')
 export class UsersController {
@@ -44,6 +45,12 @@ export class UsersController {
   @RequireRole(Roles.ADMIN)
   async getOne(@Param() params: GetOneDto): Promise<UserEntity> {
     return await this.service.findOne(params.id);
+  }
+
+  @Get('get-by-login/:login')
+  @RequireRole(Roles.ADMIN)
+  async getByLogin(@Param() params: GetByLoginDto): Promise<UserEntity[]> {
+    return await this.service.findByLogin(params.login);
   }
 
   // Получить всех
