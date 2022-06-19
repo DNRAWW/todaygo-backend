@@ -49,7 +49,7 @@ export class UsersController {
 
   @Get('get-by-login/:login')
   @RequireRole(Roles.ADMIN)
-  async getByLogin(@Param() params: GetByLoginDto): Promise<UserEntity[]> {
+  async getByLogin(@Param() params: GetByLoginDto): Promise<UserEntity> {
     return await this.service.findByLogin(params.login);
   }
 

@@ -31,13 +31,20 @@ export class UsersService {
     return result;
   }
 
-  async findByLogin(login: string): Promise<UserEntity[]> {
-    const result = await this.userRepository.find({
+  async findByLogin(login: string): Promise<UserEntity> {
+    const result = await this.userRepository.findOne({
       where: {
         login: login,
       },
       relations: ['person'],
     });
+
+    if (!result) {
+      throw new HttpException(
+        'User with login not found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
 
     return result;
   }
