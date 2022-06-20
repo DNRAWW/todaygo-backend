@@ -56,10 +56,19 @@ export class EventsController {
 
   // Получение по дате
   @Get('get-by-date')
-  @UseGuards(AuthGuard)
   async getByDate(@Query() params: GetByDateDto) {
     return await this.eventsService.findAllByDate(
       params.date,
+      params.skip,
+      params.cityId,
+    );
+  }
+
+  // Получить по имени
+  @Get('get-by-name')
+  async getByName(@Query() params: GetEventByNameDto) {
+    return await this.eventsService.findAllByName(
+      params.query,
       params.skip,
       params.cityId,
     );
@@ -75,17 +84,6 @@ export class EventsController {
     return await this.eventParticipantsService.checkParticipation(
       params.eventId,
       user.personId,
-    );
-  }
-
-  // Получить по имени
-  @Get('get-by-name')
-  @UseGuards(AuthGuard)
-  async getByName(@Query() params: GetEventByNameDto) {
-    return await this.eventsService.findAllByName(
-      params.query,
-      params.skip,
-      params.cityId,
     );
   }
 

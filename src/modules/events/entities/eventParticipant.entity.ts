@@ -16,12 +16,16 @@ export class EventParticipantEntity extends BaseEntity {
   @Column()
   eventId: number;
 
-  @ManyToOne(() => EventEntity)
+  @ManyToOne(() => EventEntity, {
+    onDelete: 'CASCADE',
+  })
   event: EventEntity;
 
   @Column()
   personId: number;
 
-  @ManyToOne(() => PersonEntity)
+  @ManyToOne(() => PersonEntity, {
+    onDelete: 'CASCADE',
+  })
   person: PersonEntity;
 }
