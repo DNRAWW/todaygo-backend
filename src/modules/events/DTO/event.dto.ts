@@ -21,7 +21,7 @@ export class EventDto {
   @IsOptional()
   tags: Tags[];
 
-  @Length(20, 500)
+  @Length(5, 500)
   @IsOptional()
   description: string;
 
