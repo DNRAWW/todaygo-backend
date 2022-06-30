@@ -1,3 +1,9 @@
+# todaygo_backend
+
+*Приложение ещё в разработке, не окончательная версия.*
+
+Сайт для объявлений о мероприятиях. Backend на NestJs. На фронте был использован vue2 и vuetify https://github.com/DNRAWW/todaygo-front.
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
 </p>
