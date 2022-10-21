@@ -10,7 +10,6 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { CityEntity } from './city.entity';
 
 export enum Tags {
   CULTURAL = 'CULTURAL',
@@ -60,10 +59,7 @@ export class EventEntity extends BaseEntity {
   })
   description: string;
 
-  @CreateDateColumn({
-    type: 'timestamp without time zone',
-    default: 'NOW()',
-  })
+  @CreateDateColumn()
   createdAt: Date;
 
   @Column({
@@ -101,19 +97,9 @@ export class EventEntity extends BaseEntity {
     type: 'int',
     nullable: false,
   })
-  cityId: number;
-
-  @ManyToOne(() => CityEntity, { onDelete: 'CASCADE' })
-  @JoinColumn()
-  city: CityEntity;
-
-  @Column({
-    type: 'int',
-    nullable: false,
-  })
   attachmentId: number;
 
   @OneToOne(() => AttachmentEntity, { onDelete: 'CASCADE' })
   @JoinColumn()
-  attachment: CityEntity;
+  attachment: AttachmentEntity;
 }

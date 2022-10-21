@@ -43,9 +43,9 @@ export class EventsController {
   }
 
   // Получить всё
-  @Get('get-all/:cityId/:skip')
+  @Get('get-all/:skip')
   async getAll(@Param() params: GetAllEventsDto) {
-    return await this.eventsService.findAll(params.skip, params.cityId);
+    return await this.eventsService.findAll(params.skip);
   }
 
   // Получить всё по организатору
@@ -57,21 +57,13 @@ export class EventsController {
   // Получение по дате
   @Get('get-by-date')
   async getByDate(@Query() params: GetByDateDto) {
-    return await this.eventsService.findAllByDate(
-      params.date,
-      params.skip,
-      params.cityId,
-    );
+    return await this.eventsService.findAllByDate(params.date, params.skip);
   }
 
   // Получить по имени
   @Get('get-by-name')
   async getByName(@Query() params: GetEventByNameDto) {
-    return await this.eventsService.findAllByName(
-      params.query,
-      params.skip,
-      params.cityId,
-    );
+    return await this.eventsService.findAllByName(params.query, params.skip);
   }
 
   // Проверить участие

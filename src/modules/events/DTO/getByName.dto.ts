@@ -8,8 +8,4 @@ export class GetEventByNameDto {
   @Type(() => Number)
   @Min(0)
   skip: number;
-
-  @Type(() => Number)
-  @Min(1)
-  cityId: number;
 }

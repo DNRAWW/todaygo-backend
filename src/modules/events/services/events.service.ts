@@ -15,7 +15,7 @@ export class EventsService {
 
   async findOne(id: number): Promise<EventEntity> {
     const result = await this.repository.findOne(id, {
-      relations: ['city', 'attachment'],
+      relations: ['attachment'],
     });
 
     if (!result) {
@@ -25,15 +25,12 @@ export class EventsService {
     return result;
   }
 
-  async findAll(skip: number, cityId: number) {
+  async findAll(skip: number) {
     const [result, total] = await this.repository.findAndCount({
       take: 10,
       skip: skip,
       order: {
         date: 'ASC',
-      },
-      where: {
-        cityId: cityId,
       },
       relations: ['attachment'],
     });
@@ -51,7 +48,7 @@ export class EventsService {
       where: {
         organizerId: id,
       },
-      relations: ['city', 'attachment'],
+      relations: ['attachment'],
     });
 
     return {
@@ -75,7 +72,6 @@ export class EventsService {
       organizerId: user.personId,
       price: event.price,
       tags: [...event.tags],
-      cityId: event.cityId,
       attachmentId: event.attachmentId,
     });
   }
@@ -116,13 +112,12 @@ export class EventsService {
     await this.repository.decrement({ id }, 'numberOfParticipants', 1);
   }
 
-  async findAllByDate(date: string, skip: number, cityId: number) {
+  async findAllByDate(date: string, skip: number) {
     const [result, total] = await this.repository.findAndCount({
       take: 10,
       skip: skip,
       where: {
         date: Between(startOfDay(new Date(date)), endOfDay(new Date(date))),
-        cityId: cityId,
       },
       relations: ['attachment'],
     });
@@ -133,13 +128,12 @@ export class EventsService {
     };
   }
 
-  async findAllByName(name: string, skip: number, cityId: number) {
+  async findAllByName(name: string, skip: number) {
     const [result, total] = await this.repository.findAndCount({
       take: 10,
       skip: skip,
       where: {
         name: ILike(`%${name}%`),
-        cityId: cityId,
       },
       relations: ['attachment'],
     });
